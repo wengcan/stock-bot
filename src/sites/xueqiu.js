@@ -13,7 +13,7 @@ const defaltHeaders = {
     'Upgrade-Insecure-Requests': 1,
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36};'
 }
-export default class Xueqiu{
+class Xueqiu{
     cookies = 'device_id=24700f9f1986800ab4fcc880530dd0ef;';
     constructor(){
         axiosInstance.get(`https://xueqiu.com/`).then(response => {
@@ -24,18 +24,34 @@ export default class Xueqiu{
             }).filter(h=>h!="").join(";") + ";";
         });
     }
-    quote(codesStr){
-        const url = `https://stock.xueqiu.com/v5/stock/quote.json?symbol=${codesStr}&extend=detail`;
-        console.log(this.cookies);
-        return  axiosInstance
-        .get(url, {
-            headers: {
-                ...defaltHeaders,
-                Cookie: this.cookies
-            }
-        })       
-        .then(response => {
-            console.log(response.data);
+    get headers(){
+        return {
+            ...defaltHeaders,
+            Cookie: this.cookies
+        }
+    }
+    request(url, withHeaders = true){
+        return axiosInstance.get(url, withHeaders?{
+            headers: this.headers
+        }:{})       
+        .then(response =>response.data)
+        .catch(err=>{
+            console.log(err);
         });
     }
+    quote(symbol){
+        const url = `https://stock.xueqiu.com/v5/stock/quote.json?symbol=${symbol}&extend=detail`;
+        this.request(url).then(data=>{
+            console.log(data);
+        })
+
+    }
+    list(page,size){
+        const url = `https://xueqiu.com/service/v5/stock/screener/quote/list?page=${page}&size=${size}&order=desc&orderby=percent&order_by=percent&market=CN&type=sh_sz&_=${+ new Date()}`;
+        return this.request(url, false).then(res=>res.data).then(data=>{
+            return data;
+        })
+    }
 }
+
+export default new Xueqiu();

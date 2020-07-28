@@ -1,2 +1,4 @@
-import main from "./src/main";
+
+import main , {loadData} from "./src/main";
+loadData();
 main();

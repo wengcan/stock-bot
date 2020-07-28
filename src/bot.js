@@ -1,10 +1,12 @@
 import CacheData from './cache';
 import {parseMsg} from './utils';
-import  Xueqiu from './sites/xueqiu';
+import  xueqiu from './sites/xueqiu';
 import {activeRooms} from "../config";
 const roomCacheData = new CacheData();
-const xueqiu  = new Xueqiu();
+
 let roomKeys = [];
+
+
 export default async function message(message) {
     let room = message.room();
     let from = message.from();

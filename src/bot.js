@@ -22,7 +22,9 @@ export default async function message(message) {
             const [names, codes] =  parseMsg(text);
             //console.log(names, codes);
             if(codes.length > 0){
-                xueqiu.quote(codes.join(","));
+                xueqiu.quote(codes.join(",")).then(data=>{
+                    
+                });
             }
             
             //parseMsg(text).then(room.say);

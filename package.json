@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "run-p watch app",
-    "watch": "parcel index.js --target node",
+    "helper": "node ./dist/helper.js data",
+    "watch": "parcel index.js helper.js --target node",
     "app": "nodemon ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

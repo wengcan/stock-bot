@@ -19,15 +19,17 @@ export default async function message(message) {
                 roomKeys.push(roomKey);
                 roomCacheData.add(roomKey, room);
             }
-            const [names, codes] =  parseMsg(text);
-            //console.log(names, codes);
+            const [names, codes] =  parseMsg(text, true);
             if(codes.length > 0){
-                xueqiu.quote(codes.join(",")).then(data=>{
-                    
-                });
+                xueqiu
+                    .quote(codes.join(","))
+                    .then(({data})=>{
+                        const {items} = data;
+                        const msg = xueqiu.batchQuoteResp(items);
+                        room.say(msg);
+                    });
             }
-            
-            //parseMsg(text).then(room.say);
+
         }
         console.log(`Message: ${room}, ${from.name()}, ${text}`)
     }

@@ -40,11 +40,15 @@ class Xueqiu{
         });
     }
     quote(symbol){
-        const url = `https://stock.xueqiu.com/v5/stock/quote.json?symbol=${symbol}&extend=detail`;
-        this.request(url).then(data=>{
-            console.log(data);
-        })
-
+        // `https://stock.xueqiu.com/v5/stock/quote.json?symbol=${symbol}&extend=detail`;
+        const url = `https://stock.xueqiu.com/v5/stock/batch/quote.json?symbol=${symbol}&_=${+ new Date()}`;
+        return this.request(url);
+    }
+    batchQuoteResp(items){
+        return items.map(({quote})=>{
+            const {open, last_close, current, name, percent}= quote;
+            return `${percent>=0?'🔴' : '🟢'} ${name}  \n今开: ${open}\n昨收: ${last_close}\n现价: ${current}\n涨幅: ${percent}% `;
+        }).join("\n\n");
     }
     list(page,size){
         const url = `https://xueqiu.com/service/v5/stock/screener/quote/list?page=${page}&size=${size}&order=desc&orderby=percent&order_by=percent&market=CN&type=sh_sz&_=${+ new Date()}`;

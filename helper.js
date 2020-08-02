@@ -60,7 +60,6 @@ function loadData(){
   });
 }
 
-console.log(args[0]);
 switch (args[0]) {
     case 'data':
         loadData();

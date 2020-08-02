@@ -1,5 +1,5 @@
 import CacheData from './cache';
-import {parseMsg} from './utils';
+import {parseMsg, parseDate} from './utils';
 import  xueqiu from './sites/xueqiu';
 import {activeRooms} from "../config";
 const roomCacheData = new CacheData();
@@ -19,15 +19,34 @@ export default async function message(message) {
                 roomKeys.push(roomKey);
                 roomCacheData.add(roomKey, room);
             }
-            const [names, codes] =  parseMsg(text, true);
+            // 大盘
+            const overviewCodes = ['SH000001','SZ399001','SZ399006','SH000688'];
+            const [names, codes] = parseMsg(text, true);
+            let symbol = "";
             if(codes.length > 0){
+                symbol = codes.join(",");
+            }else if (text.indexOf("大盘") >=0 || text.indexOf("指数") >=0){
+                symbol = overviewCodes.join(",");
+            }
+            if(symbol){
                 xueqiu
-                    .quote(codes.join(","))
+                    .quote(symbol)
                     .then(({data})=>{
                         const {items} = data;
                         const msg = xueqiu.batchQuoteResp(items);
                         room.say(msg);
-                    });
+                    });                
+            }
+            if(text.indexOf("龙虎榜") >= 0){
+                const date = parseDate(text);
+                console.log(date);
+                xueqiu
+                    .longhu(date)
+                    .then(({data})=>{
+                        console.log(data);
+                        const msg =xueqiu.longhuRes(data, date);
+                        room.say(msg);
+                    })
             }
 
         }

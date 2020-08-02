@@ -1,18 +1,17 @@
+import moment from 'moment';
 import {data} from './data/';
 let v = Object.keys(data);
 let k = Object.values(data);
 
-let tempNames = [];
-let tempCodes = [];
+const tempNames = [];
+const tempCodes = [];
+const regex = /((202\d)[-\/\_])?(\d{1,2})[-\/\_](\d{1,2})/;
 
 function parseMsg(msg,  uppercase = false){
     let [names, codes] = parseCode(msg);
     codes = codes.map(code => {
-        if (code.substr(0, 1) === '6') {
-            return `${uppercase ? 'SH': 'sh'}${code}`;
-        } else {
-            return `${uppercase ? 'SZ': 'sz'}${code}`;
-        }
+        let prefix = code.substr(0, 1) === '6'? 'sh': 'sz';
+        return `${uppercase? prefix.toUpperCase():prefix}${code}`;
     });
     return [names, codes];
 }
@@ -42,12 +41,12 @@ function parseCode(str) {
             if(!res){
                 res = getCodeAndName(v, k, current);
                 // push data to cache
-                if(res && !tempCodes.indexOf(res.code)){
+                if(res && tempCodes.indexOf(res.code) < 0){
                     tempNames.push(res.name);
                     tempCodes.push(res.code);
                 }
             }
-            if(res){
+            if(res && codes.indexOf(res.code) < 0){
                 names.push(res.name);
                 codes.push(res.code);
                 i += j;
@@ -58,5 +57,39 @@ function parseCode(str) {
     return [names, codes ];
 }
 
+function parseDate(str){
+    const match = str.match(regex);
+    const _moment = moment();
+    _moment.set({
+        'hour': 0,
+        'minute': 0,
+        'second': 0,
+        'millisecond': 0
+    });
+    console.log(match);
+    if(match){
+        
+        const month = parseInt(match[3]);
+        const day = parseInt(match[4]);
+        console.log(month, day);
+        if(month>=1 && month <=12 && day>=0 && day <=31){
+            _moment.set({
+                'month': month -1,
+                'date' : day
+            });
+        } 
+        if(match[1]){
+            const year = parseInt(match[2]);
+            _moment.set({
+                'year': year
+            });
+        }
+    }
+    return timestamp(_moment);
+}
 
-export {parseMsg}
+function timestamp(date){
+    return date? + date: + moment();
+}
+
+export {parseMsg, parseDate,  timestamp}

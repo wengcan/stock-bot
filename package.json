@@ -19,6 +19,7 @@
     "wechaty-puppet-padplus": "^0.6.3"
   },
   "devDependencies": {
+    "qrcode-terminal": "^0.12.0",
     "nodemon": "^2.0.3",
     "npm-run-all": "^4.1.5",
     "parcel-bundler": "^1.12.4"

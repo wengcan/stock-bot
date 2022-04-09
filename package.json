@@ -13,7 +13,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "colors": "^1.4.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "node-schedule": "^1.2.0",
     "wechaty": "^0.38.4",
     "wechaty-puppet-padplus": "^0.6.3"
